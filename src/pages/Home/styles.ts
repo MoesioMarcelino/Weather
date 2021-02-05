@@ -11,11 +11,15 @@ export const Header = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
 
   padding: 50px;
 
-  border-bottom: 10px solid #fff;
+  margin-bottom: 10px;
+
+  @media only screen and (max-width: 425px) {
+    padding: 30px;
+  }
 `;
 
 export const Title = styled.h1`
@@ -27,35 +31,46 @@ export const Title = styled.h1`
   }
 `;
 
-export const Filter = styled.div`
+export const FormFilter = styled.form`
   display: flex;
   align-items: center;
+  width: 70%;
 
-  @media only screen and (max-width: 550px) {
+  @media only screen and (max-width: 1000px) {
     flex-direction: column;
+    width: 100%;
   }
 `;
 
+export const Select = styled.select`
+  width: 100%;
+  border: 0;
+  margin-left: 15px;
+  font-size: 16px;
+  outline: 0;
+  background-color: transparent;
+`;
+
 export const InputContainer = styled.div`
-  background: rgb(255 255 255);
+  background: rgb(255, 255, 255);
   height: 40px;
   padding: 0 15px 0 10px;
   border-radius: 10px;
   width: 100%;
+  margin-right: 10px;
 
   display: flex;
   align-items: center;
 
-  @media only screen and (max-width: 550px) {
-    margin: 10px 0;
+  @media only screen and (max-width: 1000px) {
+    margin: 0 0 10px;
   }
 `;
 
 export const Actions = styled.div`
   display: flex;
-  margin-left: 10px;
 
-  @media only screen and (max-width: 550px) {
+  @media only screen and (max-width: 1000px) {
     width: 100%;
     margin-left: 0;
   }
@@ -74,15 +89,17 @@ export const IconContainer = styled.div`
   cursor: pointer;
   transition: opacity 0.3s;
 
+  margin-left: 10px;
+
   &:hover {
     opacity: 0.7;
   }
 
-  & + div {
+  /* & + div {
     margin-left: 10px;
-  }
+  } */
 
-  @media only screen and (max-width: 550px) {
+  @media only screen and (max-width: 1000px) {
     flex: 1;
   }
 `;
@@ -104,6 +121,39 @@ export const Input = styled.input`
   &::placeholder {
     color: #025159;
   }
+`;
+
+export const ButtonSubmit = styled.button`
+  border: 0;
+  padding: 5px;
+  background-color: #fff;
+  height: 40px;
+  border-radius: 10px;
+
+  cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* cursor: pointer; */
+  transition: opacity 0.3s;
+
+  &:hover {
+    opacity: 0.7;
+  }
+
+  @media only screen and (max-width: 1000px) {
+    flex: 1;
+  }
+`;
+
+export const Empty = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  color: #025159;
 `;
 
 export const Content = styled.div`
@@ -141,6 +191,11 @@ export const Card = styled.div`
 
   margin-top: 20px;
   margin-right: 20px;
+
+  @media only screen and (max-width: 425px) {
+    min-width: fit-content;
+    padding: 20px;
+  }
 `;
 
 export const Weather = styled.div`
@@ -153,6 +208,10 @@ export const Weather = styled.div`
 export const Temperature = styled.h1`
   font-size: 50px;
   color: #fff;
+
+  @media only screen and (max-width: 425px) {
+    font-size: 40px;
+  }
 `;
 
 export const IconWeather = styled.img`
@@ -179,4 +238,5 @@ export const Footer = styled.h4`
   align-items: center;
   justify-content: center;
   height: 5vh;
+  color: #025159;
 `;
