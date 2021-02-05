@@ -11,7 +11,6 @@ import {
   Actions,
   IconContainer,
   ButtonSubmit,
-  Empty,
   Content,
   Card,
   Weather,
@@ -20,6 +19,9 @@ import {
   Additional,
   Status,
   Location,
+  Empty,
+  EmptyImage,
+  Description,
   Footer,
 } from './styles';
 
@@ -27,6 +29,7 @@ import searchImg from '../../assets/search.svg';
 import submitImg from '../../assets/check.svg';
 import clearFilterImg from '../../assets/clear.svg';
 import sunnyImg from '../../assets/sun.svg';
+import emptyImg from '../../assets/empty.svg';
 
 import apiWeather from '../../services/api-weather';
 import apiIBGE from '../../services/api-ibge';
@@ -159,7 +162,7 @@ const Home: React.FC = () => {
               onChange={(e) => setStateSelected(e.target.value)}
             >
               <option disabled value="selected">
-                Selecione um estado
+                Select a state
               </option>
               {states.map(({ id, nome, sigla }) => (
                 <option key={id} value={sigla}>
@@ -176,7 +179,7 @@ const Home: React.FC = () => {
               onChange={(e) => setCitySelected(e.target.value)}
             >
               <option disabled value="selected">
-                Selecione uma cidade
+                Select a city
               </option>
               {cities.map(({ id, nome }) => (
                 <option key={id} value={nome}>
@@ -222,7 +225,10 @@ const Home: React.FC = () => {
             )
           )
         ) : (
-          <Empty>Enter one city to see weather</Empty>
+          <Empty>
+            <Description>Select a city to see its weather</Description>
+            <EmptyImage src={emptyImg} alt="Empty Image" />
+          </Empty>
         )}
       </Content>
       <Footer>Weather App</Footer>

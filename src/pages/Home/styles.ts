@@ -15,8 +15,6 @@ export const Header = styled.div`
 
   padding: 50px;
 
-  margin-bottom: 10px;
-
   @media only screen and (max-width: 425px) {
     padding: 30px;
   }
@@ -148,12 +146,26 @@ export const ButtonSubmit = styled.button`
   }
 `;
 
-export const Empty = styled.span`
+export const Empty = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
   width: 100%;
+`;
+
+export const EmptyImage = styled.img`
+  width: 50%;
+
+  @media only screen and (max-width: 1000px) {
+    width: 90%;
+  }
+`;
+
+export const Description = styled.span`
+  text-align: center;
   color: #025159;
+  margin-bottom: 20px;
 `;
 
 export const Content = styled.div`
