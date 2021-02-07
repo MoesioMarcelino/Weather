@@ -1,4 +1,5 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+import SelectComponent from 'react-select';
 
 export const Container = styled.div``;
 
@@ -22,7 +23,7 @@ export const Header = styled.div`
 
 export const Title = styled.h1`
   font-weight: 500;
-  font-size: 40px;
+  /* font-size: 38px; */
 
   @media only screen and (max-width: 450px) {
     font-size: 35px;
@@ -40,28 +41,27 @@ export const FormFilter = styled.form`
   }
 `;
 
-export const Select = styled.select`
+export const Select = styled(SelectComponent)`
   width: 100%;
-  border: 0;
-  margin-left: 15px;
+  margin-right: 15px;
   font-size: 16px;
-  outline: 0;
   background-color: transparent;
-`;
 
-export const InputContainer = styled.div`
-  background: rgb(255, 255, 255);
-  height: 40px;
-  padding: 0 15px 0 10px;
-  border-radius: 10px;
-  width: 100%;
-  margin-right: 10px;
+  div {
+    border-radius: 10px;
+    /* height: 38px; */
+  }
 
-  display: flex;
-  align-items: center;
+  ${(props) =>
+    props.primary &&
+    css`
+      background: black;
+      color: black;
+    `}
 
   @media only screen and (max-width: 1000px) {
-    margin: 0 0 10px;
+    margin-right: 0;
+    margin-bottom: 10px;
   }
 `;
 
@@ -77,7 +77,7 @@ export const Actions = styled.div`
 export const IconContainer = styled.div`
   padding: 5px;
   background-color: #fff;
-  height: 40px;
+  /* height: 38px; */
   border-radius: 10px;
 
   display: flex;
@@ -109,7 +109,7 @@ export const Icon = styled.img`
 
 export const Input = styled.input`
   width: 100%;
-  height: 40px;
+  /* height: 38px; */
   border: 0;
   outline: 0;
   color: #025159;
@@ -125,7 +125,7 @@ export const ButtonSubmit = styled.button`
   border: 0;
   padding: 5px;
   background-color: #fff;
-  height: 40px;
+  /* height: 38px; */
   border-radius: 10px;
 
   cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
@@ -222,13 +222,13 @@ export const Temperature = styled.h1`
   color: #fff;
 
   @media only screen and (max-width: 425px) {
-    font-size: 40px;
+    /* font-size: 38px; */
   }
 `;
 
 export const IconWeather = styled.img`
-  height: 68px;
-  width: 68px;
+  height: 75px;
+  width: 120px;
 `;
 
 export const Additional = styled.div`

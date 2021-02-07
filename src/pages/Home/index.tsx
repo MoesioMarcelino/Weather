@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
   Container,
@@ -6,7 +6,6 @@ import {
   Title,
   FormFilter,
   Select,
-  InputContainer,
   Icon,
   Actions,
   IconContainer,
@@ -25,11 +24,11 @@ import {
   Footer,
 } from './styles';
 
-import searchImg from '../../assets/search.svg';
 import submitImg from '../../assets/check.svg';
 import clearFilterImg from '../../assets/clear.svg';
-import sunnyImg from '../../assets/sun.svg';
 import emptyImg from '../../assets/empty.svg';
+
+import sunnyImg from '../../assets/weather-icons/sunny.png';
 
 import apiWeather from '../../services/api-weather';
 import apiIBGE from '../../services/api-ibge';
@@ -43,6 +42,10 @@ interface IState {
     sigla: string;
   };
   sigla: string;
+}
+interface IStateOption {
+  label: string;
+  value: string;
 }
 
 interface ICity {
@@ -72,19 +75,24 @@ interface IWeather {
 }
 
 const Home: React.FC = () => {
-  const [states, setStates] = useState<IState[]>([]);
-  const [stateSelected, setStateSelected] = useState('');
+  const [states, setStates] = useState<IStateOption[]>([]);
+  const [stateSelected, setStateSelected] = useState<IStateOption>();
 
-  const [cities, setCities] = useState<ICity[]>([]);
-  const [citySelected, setCitySelected] = useState('');
+  const [cities, setCities] = useState<IStateOption[]>([]);
+  const [citySelected, setCitySelected] = useState<IStateOption>();
 
   const [weathers, setWeathers] = useState<IWeather[]>([]);
 
   useEffect(() => {
     const getStates = async () => {
-      const { data } = await apiIBGE.get<IState[]>('');
+      const { data: statesReturned } = await apiIBGE.get<IState[]>('');
 
-      setStates(data);
+      setStates(
+        statesReturned.map((state) => ({
+          label: state.nome,
+          value: state.sigla,
+        }))
+      );
     };
 
     getStates();
@@ -93,11 +101,13 @@ const Home: React.FC = () => {
   useEffect(() => {
     if (stateSelected) {
       const getCities = async () => {
-        const { data } = await apiIBGE.get<ICity[]>(
-          `/${stateSelected}/municipios`
+        const { data: citiesReturned } = await apiIBGE.get<ICity[]>(
+          `/${stateSelected.value}/municipios`
         );
 
-        setCities(data);
+        setCities(
+          citiesReturned.map(({ nome }) => ({ label: nome, value: nome }))
+        );
       };
 
       getCities();
@@ -112,7 +122,7 @@ const Home: React.FC = () => {
         '/locations/v1/cities/search',
         {
           params: {
-            q: citySelected,
+            q: citySelected?.value,
           },
         }
       );
@@ -146,50 +156,59 @@ const Home: React.FC = () => {
   );
 
   const handleClearFilter = useCallback((e) => {
-    e.preventDefault();
+    setStateSelected(undefined);
+    setCitySelected(undefined);
   }, []);
+
+  const styles = useMemo(
+    () => ({
+      option: (
+        styles: any,
+        { data, isDisabled, isFocused, isSelected }: any
+      ) => ({
+        ...styles,
+        backgroundColor: isFocused
+          ? '#025159'
+          : isSelected
+          ? '#025159'
+          : 'white',
+        color: isFocused ? 'white' : isSelected ? 'white' : 'black',
+        cursor: 'pointer',
+        marginBottom: 2,
+        borderRadius: 0,
+      }),
+    }),
+    []
+  );
 
   return (
     <Container>
       <Header>
         <Title>Weather App</Title>
         <FormFilter onSubmit={handleSubmit}>
-          <InputContainer>
-            <Icon src={searchImg} alt="Search" />
-            <Select
-              name="state"
-              value={stateSelected || 'selected'}
-              onChange={(e) => setStateSelected(e.target.value)}
-            >
-              <option disabled value="selected">
-                Select a state
-              </option>
-              {states.map(({ id, nome, sigla }) => (
-                <option key={id} value={sigla}>
-                  {nome}
-                </option>
-              ))}
-            </Select>
-          </InputContainer>
-          <InputContainer>
-            <Icon src={searchImg} alt="Search" />
-            <Select
-              name="city"
-              value={citySelected || 'selected'}
-              onChange={(e) => setCitySelected(e.target.value)}
-            >
-              <option disabled value="selected">
-                Select a city
-              </option>
-              {cities.map(({ id, nome }) => (
-                <option key={id} value={nome}>
-                  {nome}
-                </option>
-              ))}
-            </Select>
-          </InputContainer>
+          <Select
+            options={states}
+            placeholder="Busque um estado"
+            onChange={(optionSelected: IStateOption) =>
+              setStateSelected(optionSelected)
+            }
+            styles={styles}
+            isClearable
+          />
+          <Select
+            options={cities}
+            placeholder="Busque uma cidade"
+            onChange={(optionSelected: IStateOption) =>
+              setCitySelected(optionSelected)
+            }
+            styles={styles}
+            isClearable
+          />
           <Actions>
-            <ButtonSubmit type="submit" disabled={!citySelected}>
+            <ButtonSubmit
+              type="submit"
+              disabled={!citySelected || !stateSelected}
+            >
               <Icon src={submitImg} alt="Submit" />
             </ButtonSubmit>
             <IconContainer onClick={handleClearFilter}>
