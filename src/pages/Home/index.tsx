@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import {
   Container,
@@ -11,13 +17,6 @@ import {
   IconContainer,
   ButtonSubmit,
   Content,
-  Card,
-  Weather,
-  Temperature,
-  IconWeather,
-  Additional,
-  Status,
-  Location,
   Empty,
   EmptyImage,
   Description,
@@ -28,10 +27,10 @@ import submitImg from '../../assets/check.svg';
 import clearFilterImg from '../../assets/clear.svg';
 import emptyImg from '../../assets/empty.svg';
 
-import sunnyImg from '../../assets/weather-icons/sunny.png';
-
 import apiWeather from '../../services/api-weather';
 import apiIBGE from '../../services/api-ibge';
+
+import Card from '../../components/Card';
 
 interface IState {
   id: number;
@@ -75,13 +74,24 @@ interface IWeather {
 }
 
 const Home: React.FC = () => {
+  const selectCityElement = useRef<HTMLSelectElement>(null);
+  const selectStateElement = useRef<HTMLSelectElement>(null);
+
   const [states, setStates] = useState<IStateOption[]>([]);
-  const [stateSelected, setStateSelected] = useState<IStateOption>();
+  const [stateSelected, setStateSelected] = useState<IStateOption | null>();
 
   const [cities, setCities] = useState<IStateOption[]>([]);
-  const [citySelected, setCitySelected] = useState<IStateOption>();
+  const [citySelected, setCitySelected] = useState<IStateOption | null>();
 
-  const [weathers, setWeathers] = useState<IWeather[]>([]);
+  const [weathers, setWeathers] = useState<IWeather[]>(() => {
+    const weathersStoraged = localStorage.getItem('@WeatherApp:weathers');
+
+    if (weathersStoraged) {
+      return JSON.parse(weathersStoraged);
+    }
+
+    return [];
+  });
 
   useEffect(() => {
     const getStates = async () => {
@@ -96,6 +106,11 @@ const Home: React.FC = () => {
     };
 
     getStates();
+  }, []);
+
+  const handleClearFilter = useCallback(() => {
+    (selectStateElement as any).current.select.setValue(null);
+    (selectCityElement as any).current.select.setValue(null);
   }, []);
 
   useEffect(() => {
@@ -150,15 +165,26 @@ const Home: React.FC = () => {
         };
 
         setWeathers([...weathers, newWeather]);
+
+        handleClearFilter();
       }
     },
-    [citySelected, weathers]
+    [citySelected?.value, handleClearFilter, weathers]
   );
 
-  const handleClearFilter = useCallback((e) => {
-    setStateSelected(undefined);
-    setCitySelected(undefined);
-  }, []);
+  useEffect(() => {
+    localStorage.setItem('@WeatherApp:weathers', JSON.stringify(weathers));
+  }, [weathers]);
+
+  const handleRemoveCard = useCallback(
+    (id: number) => {
+      setWeathers((oldState) =>
+        oldState.filter((weather) => weather.id !== id)
+      );
+      handleClearFilter();
+    },
+    [handleClearFilter]
+  );
 
   const styles = useMemo(
     () => ({
@@ -187,6 +213,7 @@ const Home: React.FC = () => {
         <Title>Weather App</Title>
         <FormFilter onSubmit={handleSubmit}>
           <Select
+            ref={selectStateElement}
             options={states}
             placeholder="Busque um estado"
             onChange={(optionSelected: IStateOption) =>
@@ -196,6 +223,7 @@ const Home: React.FC = () => {
             isClearable
           />
           <Select
+            ref={selectCityElement}
             options={cities}
             placeholder="Busque uma cidade"
             onChange={(optionSelected: IStateOption) =>
@@ -211,7 +239,7 @@ const Home: React.FC = () => {
             >
               <Icon src={submitImg} alt="Submit" />
             </ButtonSubmit>
-            <IconContainer onClick={handleClearFilter}>
+            <IconContainer onClick={() => handleClearFilter()}>
               <Icon src={clearFilterImg} alt="Submit" />
             </IconContainer>
           </Actions>
@@ -222,25 +250,23 @@ const Home: React.FC = () => {
           weathers.map(
             ({
               id,
-              Temperature: degrees,
-              WeatherText,
+              Temperature: {
+                Metric: { Value: degrees },
+              },
+              WeatherText: weather,
               cityName,
               state,
               country,
             }) => (
-              <Card key={id}>
-                <Weather>
-                  <Temperature>{degrees.Metric.Value}°C</Temperature>
-                  <IconWeather src={sunnyImg} alt={WeatherText} />
-                </Weather>
-
-                <Additional>
-                  <Status>{WeatherText}</Status>
-                  <Location>
-                    {cityName}, {state} - {country}
-                  </Location>
-                </Additional>
-              </Card>
+              <Card
+                key={id}
+                temperature={degrees}
+                weather={weather}
+                cityName={cityName}
+                state={state}
+                country={country}
+                removeCard={() => handleRemoveCard(id)}
+              ></Card>
             )
           )
         ) : (

@@ -6,7 +6,6 @@ const apiWeather = axios.create({
   baseURL: `http://dataservice.accuweather.com`,
   params: {
     apikey,
-    language: 'pt-br',
   },
 });
 
