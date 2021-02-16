@@ -23,9 +23,7 @@ import {
   Footer,
 } from './styles';
 
-import submitImg from '../../assets/check.svg';
-import clearFilterImg from '../../assets/clear.svg';
-import emptyImg from '../../assets/empty.svg';
+import { check, clear, empty } from '../../assets';
 
 import apiWeather from '../../services/api-weather';
 import apiIBGE from '../../services/api-ibge';
@@ -237,10 +235,10 @@ const Home: React.FC = () => {
               type="submit"
               disabled={!citySelected || !stateSelected}
             >
-              <Icon src={submitImg} alt="Submit" />
+              <Icon src={check} alt="Submit" />
             </ButtonSubmit>
             <IconContainer onClick={() => handleClearFilter()}>
-              <Icon src={clearFilterImg} alt="Submit" />
+              <Icon src={clear} alt="Submit" />
             </IconContainer>
           </Actions>
         </FormFilter>
@@ -272,7 +270,7 @@ const Home: React.FC = () => {
         ) : (
           <Empty>
             <Description>Select a city to see its weather</Description>
-            <EmptyImage src={emptyImg} alt="Empty Image" />
+            <EmptyImage src={empty} alt="Empty Image" />
           </Empty>
         )}
       </Content>
