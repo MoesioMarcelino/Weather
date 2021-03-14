@@ -29,6 +29,7 @@ import apiWeather from '../../services/api-weather';
 import apiIBGE from '../../services/api-ibge';
 
 import Card from '../../components/Card';
+import StateManager from 'react-select';
 
 interface IState {
   id: number;
@@ -72,8 +73,8 @@ interface IWeather {
 }
 
 const Home: React.FC = () => {
-  const selectCityElement = useRef<HTMLSelectElement>(null);
-  const selectStateElement = useRef<HTMLSelectElement>(null);
+  const selectCityElement = useRef<StateManager>();
+  const selectStateElement = useRef<StateManager>();
 
   const [states, setStates] = useState<IStateOption[]>([]);
   const [stateSelected, setStateSelected] = useState<IStateOption | null>();
@@ -107,8 +108,8 @@ const Home: React.FC = () => {
   }, []);
 
   const handleClearFilter = useCallback(() => {
-    (selectStateElement as any).current.select.setValue(null);
-    (selectCityElement as any).current.select.setValue(null);
+    selectStateElement.current?.select.clearValue();
+    selectCityElement.current?.select.clearValue();
   }, []);
 
   useEffect(() => {
