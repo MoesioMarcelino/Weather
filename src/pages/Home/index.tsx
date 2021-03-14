@@ -1,10 +1,5 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { ValueType } from 'react-select';
 
 import {
   Container,
@@ -29,7 +24,6 @@ import apiWeather from '../../services/api-weather';
 import apiIBGE from '../../services/api-ibge';
 
 import Card from '../../components/Card';
-import StateManager from 'react-select';
 
 interface IState {
   id: number;
@@ -73,14 +67,18 @@ interface IWeather {
 }
 
 const Home: React.FC = () => {
-  const selectCityElement = useRef<StateManager>();
-  const selectStateElement = useRef<StateManager>();
+  // const selectCityElement = useRef<StateManager>();
+  // const selectStateElement = useRef<StateManager>();
 
   const [states, setStates] = useState<IStateOption[]>([]);
-  const [stateSelected, setStateSelected] = useState<IStateOption | null>();
+  const [stateSelected, setStateSelected] = useState<
+    ValueType<IStateOption, false>
+  >();
 
   const [cities, setCities] = useState<IStateOption[]>([]);
-  const [citySelected, setCitySelected] = useState<IStateOption | null>();
+  const [citySelected, setCitySelected] = useState<
+    ValueType<IStateOption, false>
+  >();
 
   const [weathers, setWeathers] = useState<IWeather[]>(() => {
     const weathersStoraged = localStorage.getItem('@WeatherApp:weathers');
@@ -108,8 +106,8 @@ const Home: React.FC = () => {
   }, []);
 
   const handleClearFilter = useCallback(() => {
-    selectStateElement.current?.select.clearValue();
-    selectCityElement.current?.select.clearValue();
+    setStateSelected(null);
+    setCitySelected(null);
   }, []);
 
   useEffect(() => {
@@ -124,6 +122,7 @@ const Home: React.FC = () => {
         );
       };
 
+      setCitySelected(null);
       getCities();
     }
   }, [stateSelected]);
@@ -212,7 +211,7 @@ const Home: React.FC = () => {
         <Title>Weather App</Title>
         <FormFilter onSubmit={handleSubmit}>
           <Select
-            ref={selectStateElement}
+            value={stateSelected}
             options={states}
             placeholder="Busque um estado"
             onChange={(optionSelected: IStateOption) =>
@@ -222,7 +221,7 @@ const Home: React.FC = () => {
             isClearable
           />
           <Select
-            ref={selectCityElement}
+            value={citySelected}
             options={cities}
             placeholder="Busque uma cidade"
             onChange={(optionSelected: IStateOption) =>
@@ -238,7 +237,7 @@ const Home: React.FC = () => {
             >
               <Icon src={check} alt="Submit" />
             </ButtonSubmit>
-            <IconContainer onClick={() => handleClearFilter()}>
+            <IconContainer /* onClick={() => handleClearFilter()} */>
               <Icon src={clear} alt="Submit" />
             </IconContainer>
           </Actions>
