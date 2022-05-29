@@ -5,7 +5,7 @@ Weather app is an application to see current weather about specifics cities in B
 ![Weather App](https://user-images.githubusercontent.com/37598129/108006545-7f0c5380-6fda-11eb-87b3-c94182a13daf.gif)
 
 ## Demo
-You can see a demo live in my [portfolio](https://moesiomarcelino.dev).
+You can see a demo live in my [portfolio](https://moesiomarcelino.com).
 Go to portfolio section and click on project.
 
 ## Technologies
@@ -38,8 +38,6 @@ yarn start
 All sugestions and contributions are welcome! In this case, contact me through the links below
 
 ## Networking
-- [Porfolio](https://moesiomarcelino.dev)
+- [Porfolio](https://moesiomarcelino.com)
 - [GitHub](https://github.com/MoesioMarcelino)
 - [Linkedin](https://br.linkedin.com/in/mo%C3%A9sio-marcelino-2348a5152)
-- [Instagram](https://www.instagram.com/moesiomarcelino/)
-- [Whatsapp](https://wa.me/5588997129443?text=Ol%C3%A1,%20Mo%C3%A9sio!%20)
